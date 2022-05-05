@@ -1,10 +1,14 @@
---require "init-ui"
 require "canvas"
 
-
 local wd = peripheral.wrap("top")
---canvasColor("#223")
+local res = wd.getResolution()
+
+canvas.setURL(wd, 'app.mcap.fun/8080/canvas/index.html')
+os.sleep(2)
+
 canvas.clear(wd)
+canvas.size(wd, res, res)
+canvas.color(wd, "black")
 
 canvas.line(wd, { 50, 720, 300, 720 }, { fill = "cyan", stroke = "cyan", strokeWidth = 25 })
 
@@ -62,13 +66,12 @@ canvas.polygon(wd,
   }
 )
 
-
-canvas.text(wd, 'hello world', {
+canvas.text(wd, 'Privet Mir', {
     fill = "deepskyblue",
     fontSize = 40,
     left = 300,
     top = 50
-}
+}, 'ru')
 
 canvas.triangle(wd, {
     width = 100, 
@@ -79,14 +82,3 @@ canvas.triangle(wd, {
     stroke = 'deepskyblue', 
     strokeWidth = 5
 })
-
---[[
-setInterval(()=>{
-
-}, 100)
-
-function setInterval ()
-
-end
-setInterval ( draw, 1000)
-]]

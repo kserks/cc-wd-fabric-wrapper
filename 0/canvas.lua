@@ -1,22 +1,15 @@
 --- http://fabricjs.com/docs/index.html ---
 --- https://montoyo.net/wdwiki/index.php?title=OpenComputers_Interface ---
+-----------------------------------------------------------------------------------
 
-
--- wd.runJS("location.href = 'http://ya.ru'")
--- getResolution()
-
--- usage
--- line({ 50, 720, 300, 720 }, { fill = "cyan", stroke = "cyan", strokeWidth = 25 })
-------------------------------------------------------------------------------------
 local function line (wd, points, p)
   local shape = "new Line([ "..points[1]..", "..points[2]..", "..points[3]..", "..points[4].." ], { fill: '"..p.fill.."', stroke: '"..p.stroke.."', strokeWidth: "..p.strokeWidth.." })"  
   local js_code = "canvas.add("..shape..");"
   wd.runJS(js_code)
 end
- 
--- usage
--- image("http://fabricjs.com/assets/pug_small.jpg", { left = 400, top = 400, width = 300, height = 300 })
+
 ------------------------------------------------------------------------------------
+
 local function image (wd, url, p)
   local callback = "function imageLoad(myImg) {var img1 = myImg.set({ left: "..p.left..", top: "..p.top.." ,width: "..p.width..", height: "..p.height.."});canvas.add(img1);}"
   local img = "fabric.Image.fromURL('"..url.."', imageLoad );"  
@@ -24,19 +17,6 @@ local function image (wd, url, p)
   wd.runJS(js_code)
 end
 
--- usage
---[[
-      rect({ 
-        fill = "rgba(0,0,0,0.5)", 
-        angle = -15, 
-        stroke = "#f70a7d", 
-        strokeWidth = 5,
-        width = 200,
-        height = 200,
-        top = 300,
-        left = 200
-      })
-]]
 ------------------------------------------------------------------------------------
 
 local function rect (wd, p)
@@ -57,18 +37,6 @@ local function rect (wd, p)
   wd.runJS(js_code)
 end
 
-
--- usage
---[[
-      circle({
-        radius = 50,
-        fill = 'rgba(0,0,0,0)',
-        top = 600,
-        left = 600,
-        strokeWidth = 5,
-        stroke = 'red'
-      })
-]]
 ------------------------------------------------------------------------------------
 -- strokeDashArray = '[5, 5]' - штриховка границы. ширина и отступ
 local function circle (wd, p)
@@ -86,23 +54,8 @@ local function circle (wd, p)
   local js_code = "canvas.add("..shape..");"
   wd.runJS(js_code)
 end
--- usage
---[[
-      polyline(
-        { 
-          { x = 0, y = 0 }, 
-          { x = 100, y = 50 }, 
-          { x = 250, y = 200 }, 
-          { x = 200, y = 10 }
-        }, 
-        {
-          fill = 'rgba(0,0,0,0)',
-          stroke = 'lightgreen',
-          strokeWidth = 10
-        }
-      )
-]]
 ------------------------------------------------------------------------------------
+
 local function polyline (wd, points, p)
   local str = [[
       new Polyline(
@@ -120,47 +73,28 @@ local function polyline (wd, points, p)
   local js_code = "canvas.add("..shape..");"
   wd.runJS(js_code)
 end
--- usage
---[[
-    text('hello world', {
-      fill = "deepskyblue",
-      fontSize = 20
-      left = 500
-      top = 50
-    })
-]]
 ------------------------------------------------------------------------------------
-local function text (wd, text, p)
+
+local function text (wd, text, p, lang)
   local str = [[
-          new Text('%s', {
+          textFormat('%s', {
               fontSize: %s,
               left: %s,
               top: %s,
               fill: "%s"
-          })
+          }, "%s")
   ]]
-  local shape = string.format(str, text, p.fontSize, p.left, p.top, p.fill)
-  local js_code = "canvas.add("..shape..");"
+  local js_code = ''
+  if (lang) then
+    js_code = string.format(str, text, p.fontSize, p.left, p.top, p.fill, lang)
+ 
+  else
+    js_code = string.format(str, text, p.fontSize, p.left, p.top, p.fill, "null")
+  end
   wd.runJS(js_code)
 end
--- usage
---[[
-  polygon(
-        {
-          { x = 400, y = 410 },
-          { x = 450, y = 450 },
-          { x = 450, y = 680 },
-          { x = 350, y = 680 },
-          { x = 350, y = 450 }
-        }, 
-        {
-          fill = 'rgba(100,0,0,0.5)', 
-          stroke = "gold",
-          strokeWidth = 3, 
-        }
-  )
-]]
 ------------------------------------------------------------------------------------
+
 local function polygon (wd, points, p)
   local str = [[
     new Polygon(
@@ -183,19 +117,6 @@ local function polygon (wd, points, p)
   wd.runJS(js_code)
 end
 
-
--- usage
---[[
-      triangle({
-          width = 100, 
-          height = 100, 
-          left = 50, 
-          top = 300,  
-          fill = 'rgba(0,0,0,0)',
-          stroke = 'deepskyblue', 
-          strokeWidth = 5
-      })
-]]
 ------------------------------------------------------------------------------------
 local function triangle (wd, p)
   local str = [[
@@ -213,19 +134,31 @@ local function triangle (wd, p)
   local js_code = "canvas.add("..shape..");"
   wd.runJS(js_code)
 end
+------------------------------------------------------------------------------------
 
---canvas.setHeight(500);
---canvas.setWidth(800);
 
 local function canvasClear (wd)
   wd.runJS("canvas.clear()")
 end
+------------------------------------------------------------------------------------
+
 local function canvasColor (wd, color)
-  local str = "canvas.backgroundColor = '%s';"
+  local str = "canvas.backgroundColor = '%s';canvas.renderAll();"
   local js_code = string.format(str, color)
   wd.runJS(js_code)
 end
+------------------------------------------------------------------------------------
 
+local function canvasSize (wd, width, height)
+  local str = "canvas.setWidth(%s);canvas.setHeight(%s);"
+  local js_code = string.format(str, width, height)
+  wd.runJS(js_code)
+end
+------------------------------------------------------------------------------------
+
+local function setURL (wd, url)
+  wd.setURL(url)
+end
 
 canvas = {
   line = line,
@@ -237,7 +170,98 @@ canvas = {
   polygon = polygon,
   triangle = triangle,
   clear = canvasClear,
-  color = canvasColor
+  color = canvasColor,
+  size = canvasSize,
+  setURL = setURL
 }
 
 return canvas
+
+--[[
+  @USAGE
+require "canvas"
+
+local wd = peripheral.wrap("top")
+local res = wd.getResolution()
+
+canvas.setURL(wd, 'app.mcap.fun/8080/canvas/index.html')
+os.sleep(2)
+
+canvas.clear(wd)
+canvas.size(wd, res, res)
+canvas.color(wd, "black")
+
+canvas.line(wd, { 50, 720, 300, 720 }, { fill = "cyan", stroke = "cyan", strokeWidth = 25 })
+
+canvas.image(wd, "http://fabricjs.com/assets/pug_small.jpg", { left = 480, top = 100, width = 300, height = 300 })
+
+canvas.rect(wd, { 
+  fill = "rgba(0,0,0,0.5)", 
+  angle = -15, 
+  stroke = "#f70a7d", 
+  strokeWidth = 5,
+  width = 200,
+  height = 200,
+  top = 300,
+  left = 50
+})
+
+
+canvas.circle(wd, {
+  radius = 50,
+  fill = 'rgba(0,0,0,0)',
+  top = 670,
+  left = 670,
+  strokeWidth = 5,
+  stroke = 'red'
+})
+
+canvas.polyline(wd, 
+  { 
+    { x = 0, y = 0 }, 
+    { x = 100, y = 50 }, 
+    { x = 250, y = 200 }, 
+    { x = 200, y = 10 }
+  }, 
+  {
+    fill = 'rgba(0,0,0,0)',
+    stroke = 'lightgreen',
+    strokeWidth = 10
+  }
+)
+
+
+
+canvas.polygon(wd, 
+  {
+    { x = 400, y = 410 },
+    { x = 450, y = 450 },
+    { x = 450, y = 680 },
+    { x = 350, y = 680 },
+    { x = 350, y = 450 }
+  }, 
+  {
+    fill = 'rgba(100,0,0,0.5)', 
+    stroke = "gold",
+    strokeWidth = 3
+  }
+)
+
+canvas.text(wd, 'Privet Mir', {
+    fill = "deepskyblue",
+    fontSize = 40,
+    left = 300,
+    top = 50
+}, 'ru')
+
+canvas.triangle(wd, {
+    width = 100, 
+    height = 100, 
+    left = 300, 
+    top = 220,  
+    fill = 'rgba(0,0,0,0)',
+    stroke = 'deepskyblue', 
+    strokeWidth = 5
+})
+
+]]
