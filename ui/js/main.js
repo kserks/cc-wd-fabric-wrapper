@@ -5,10 +5,12 @@ window.onerror = function (message, source, lineno, colno, error){
 
 class UI {
   bindingElements = []
+  defaultBG = '#334';
   constructor (){
     this.$ = document.querySelector('.ui-wrapper');
     this.mount();
     this.countID = 0;
+
   }
   mount (){
     this.$.addEventListener('click', e=>{
@@ -99,13 +101,14 @@ class UI {
                  </div>`;
     this.append(tpl);
   }
-  input (content, left, top, lang, bind_id){
+  input (content, label, left, top, lang, bind_id){
     this.bind(bind_id)
     const text = textFormat(content,  lang);
+    const _label = textFormat(label,  lang);
     const _id = ++this.countID
     const tpl = ` <div class="ui-input" ${styleFormat(left, top)}>
-                    <label for="input_${_id}">${text}</label>
-                    <input type="text" value="" id="input_${_id}" data-bind="${bind_id}"/>
+                    <label for="input_${_id}">${_label}</label>
+                    <input type="text" value="${text}" id="input_${_id}" data-bind="${bind_id}"/>
                  </div>`
     this.append(tpl);
   }
@@ -125,13 +128,25 @@ class UI {
   }
   block (borderWidth=0, borderColor, backgroundColor, left, top, width, height){
 
-    const style = `position:absolute; left: ${left}px; top: ${top}px;width:${width}px;height:${height}px; border: ${borderWidth}px solid ${borderColor};background-color: ${backgroundColor}`
+    const style = `position:absolute;border-radius:3px; left: ${left}px; top: ${top}px;width:${width}px;height:${height}px; border: ${borderWidth}px solid ${borderColor};background-color: ${backgroundColor}`
     const tpl = `<div style='${style}'></div>`;
     this.append(tpl);
   }
   color (color){
 
     this.$.style.backgroundColor = color;
+  }
+  clear (){
+    this.$.innerHTML = '';
+    this.color(this.defaultBG)
+  }
+  name (bind_id){
+
+    this.bind("name")
+    const _id = ++this.countID
+    const tpl = ` <input style="display:none;" type="text" value="${bind_id}" id="input_${_id}" data-bind="name"/>`
+    this.append(tpl);
+
   }
 }
 
@@ -154,3 +169,12 @@ ui.button('Soranit', 'success', 10, 350, 'ru', 'click_btn')
 
 }
 
+
+/**
+ *
+ input.value = 'test'
+ player.id
+ ui.name('formID')
+ *
+ * 
+ */
