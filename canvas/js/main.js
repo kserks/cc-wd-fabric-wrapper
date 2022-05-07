@@ -28,7 +28,7 @@ window.onload = function (){
 
 
 
-const dict = {
+const dictonary = {
     "a A": 'а',
     "b B": 'б',
     "v V": 'в',
@@ -64,27 +64,27 @@ const dict = {
     "ya ja Ya Ja": 'я'
 }
 
-function textFormat(originalText, options, lang){
+function textFormat(originalText,  lang){
   let text = originalText
   if(lang==='ru'){
-      Object.keys(dict)
-            // длинные ключи заменяем первыми, что бы не поломать их, если короткие
-            // будут стоять раньше
-            .sort((a,b)=>{
-                    if(a.length<b.length) return 1;
-            })
-            .map(keyENG=>{
+    const sortedArr = Object.keys(dictonary)
+                            .sort((a,b)=>{
+                                    if(a.length>b.length) return -1;
+                                    if(a.length<b.length) return 1;
+                                    return 0;
+                            })
+          sortedArr.map(keyENG=>{
                   let keys = keyENG.split(' ')
                   keys.map(k=>{
                       if(k===k.toUpperCase()){
-                        text = text.replaceAll(k, dict[keyENG].toUpperCase())  
+                        text = text.replaceAll(k, dictonary[keyENG].toUpperCase())  
                       }
                       else{
-                        text = text.replaceAll(k, dict[keyENG])
+                        text = text.replaceAll(k, dictonary[keyENG])
                       }
                   })
             })
   }
-
-  canvas.add(new Text(text, options))
+   canvas.add(new Text(text, options))
 }
+

@@ -37,13 +37,13 @@ const dictonary = {
 function textFormat(originalText,  lang){
   let text = originalText
   if(lang==='ru'){
-      Object.keys(dictonary)
-            // длинные ключи заменяем первыми, что бы не поломать их, если короткие
-            // будут стоять раньше
-            .sort((a,b)=>{
-                    if(a.length<b.length) return 1;
-            })
-            .map(keyENG=>{
+    const sortedArr = Object.keys(dictonary)
+                            .sort((a,b)=>{
+                                    if(a.length>b.length) return -1;
+                                    if(a.length<b.length) return 1;
+                                    return 0;
+                            })
+          sortedArr.map(keyENG=>{
                   let keys = keyENG.split(' ')
                   keys.map(k=>{
                       if(k===k.toUpperCase()){
@@ -71,6 +71,9 @@ function typeFormat (type){
 }
 
 
-function styleFormat (left, top){
+function styleFormat (left, top, width, height){
+  if(width&&height){
+      return `style='position:absolute; left: ${left}px; top: ${top}px;width:${width}px;height:${height}px;'`
+  }
   return `style='position:absolute; left: ${left}px; top: ${top}px;'`
 }

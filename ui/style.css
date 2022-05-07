@@ -34,14 +34,34 @@ button.ui-button{
 input[type="text"]{
   color: gray;
 }
+.ul-group{
+  max-height: 400px;
+  overflow: auto;
+  padding-right: 10px;
+}
 li{
   font-size: 24px;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 4px;
+  padding: 5px 20px;
+  margin-bottom: 5px;
+  position: relative;
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+  white-space: nowrap;
 }
-
+li::before {
+  content: '';
+  width: 5px;
+  height: 100%;
+  background: darkslategray;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
 .ui-switch{
   /*transform: scale(3);*/
 
-}
+}/*
 .scale3{
   margin: 50px;
   transform: scale(5);
@@ -70,4 +90,4 @@ input[name="test2"]{
 .wrapper.btns{
   display: flex;
   justify-content: space-around;
-}
+}*/
