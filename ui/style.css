@@ -10,7 +10,6 @@ html, body{
 body{
   width: 100vw;
   height: 100vh;
-  font-size: 20px;
   color: wheat;
   position: relative;
 }
@@ -18,14 +17,21 @@ body{
 .ui-wrapper{
     background-color: #334;
     color: wheat;
-    font-size: 20px;
+    font-size: 24px;
     font-family: Minecraft !important;
 }
+
+label{
+  font-size: 24px !important;
+}
+
 button.ui-button{
 
   padding: 5px 10px;
   height: 40px;
-
+  font-size: 24px;
+  font-weight: unset;
+  font-style: unset;
   z-index: 9999;
   font-family: Minecraft;
 }
