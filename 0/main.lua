@@ -1,84 +1,60 @@
-require "canvas"
+
+require "ui"
 
 local wd = peripheral.wrap("top")
 local res = wd.getResolution()
 
-canvas.setURL(wd, 'app.mcap.fun/8080/canvas/index.html')
-os.sleep(2)
+ui.clear(wd)
+ui.name(wd, 'formID')
+ui.color(wd, 'black')
+----------------------
 
-canvas.clear(wd)
-canvas.size(wd, res, res)
-canvas.color(wd, "black")
+ui.button(wd, 'Po umolchaniyu', 'default', 10, 10, 'ru')
+ui.button(wd, 'Vnimanie', 'primary', 10, 60, 'ru')
 
-canvas.line(wd, { 50, 720, 300, 720 }, { fill = "cyan", stroke = "cyan", strokeWidth = 25 })
+ui.button(wd, 'Vnimanie', 'warning', 10, 180, 'ru')
+ui.button(wd, 'Vnimanie', 'light', 10, 240, 'ru')
+ui.button(wd, 'Dangerous', 'dangerous', 10, 300, nil)
 
-canvas.image(wd, "http://fabricjs.com/assets/pug_small.jpg", { left = 480, top = 100, width = 300, height = 300 })
+ui.checkbox(wd, 'Variant', 400, 10, true, 'ru', 'checkbox_1')
+ui.checkbox(wd, 'Variant 2', 400, 50, false, 'ru')
 
-canvas.rect(wd, { 
-  fill = "rgba(0,0,0,0.5)", 
-  angle = -15, 
-  stroke = "#f70a7d", 
-  strokeWidth = 5,
-  width = 200,
-  height = 200,
-  top = 300,
-  left = 50
-})
+ui.button(wd, 'Soxranitmzn', 'success', 10, 350, 'ru', 'click_btn')
 
 
-canvas.circle(wd, {
-  radius = 50,
-  fill = 'rgba(0,0,0,0)',
-  top = 670,
-  left = 670,
-  strokeWidth = 5,
-  stroke = 'red'
-})
+--ui.switch(wd, 'Perekluchatel', 400, 220, true, 'ru', 'bind_id-1')
+ui.switch(wd, 'test 1', 400, 300, true, nil, 'bind_id-2')
+ui.switch(wd, 'test 2', 400, 350, true, nil)
 
-canvas.polyline(wd, 
-  { 
-    { x = 0, y = 0 }, 
-    { x = 100, y = 50 }, 
-    { x = 250, y = 200 }, 
-    { x = 200, y = 10 }
-  }, 
-  {
-    fill = 'rgba(0,0,0,0)',
-    stroke = 'lightgreen',
-    strokeWidth = 10
-  }
-)
+ui.input(wd, 'kontent 1', 'Pole dlya vvoda', 400, 370, nil, 'id-inputData')
+ui.input(wd, 'kontent 2', 'Pole dlya vvoda 2', 400, 450, nil)
 
 
+ui.items(wd, {
+  "item 1",
+  "item 2",
+  "item 3",
+  "item 4",
+  "item 5",
+  "item 6",
+}, 10, 400)
 
-canvas.polygon(wd, 
-  {
-    { x = 400, y = 410 },
-    { x = 450, y = 450 },
-    { x = 450, y = 680 },
-    { x = 350, y = 680 },
-    { x = 350, y = 450 }
-  }, 
-  {
-    fill = 'rgba(100,0,0,0.5)', 
-    stroke = "gold",
-    strokeWidth = 3
-  }
-)
 
-canvas.text(wd, 'Privet Mir', {
-    fill = "deepskyblue",
-    fontSize = 40,
-    left = 300,
-    top = 50
-}, 'ru')
+ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 670, 400, 200, 450)
+ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 900, 0, 100, 100)
+ui.block(wd, 10, 'magenta', 'darkcyan', 100, 850, 400, 100)
 
-canvas.triangle(wd, {
-    width = 100, 
-    height = 100, 
-    left = 300, 
-    top = 220,  
-    fill = 'rgba(0,0,0,0)',
-    stroke = 'deepskyblue', 
-    strokeWidth = 5
-})
+-- 
+
+----- init webModem ----
+
+local wm = peripheral.wrap("left")
+
+ui.initServer(wd, "http://localhost:60000",
+function (jsonBody)
+      local body = textutils.unserializeJSON(jsonBody)
+      for key, val in pairs(body) do
+         print(key..': ', val)
+      end
+      print('----------------------')
+end)

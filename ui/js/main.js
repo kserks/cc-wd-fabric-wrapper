@@ -6,6 +6,8 @@ window.onerror = function (message, source, lineno, colno, error){
 class UI {
   bindingElements = []
   defaultBG = '#334';
+  #url = '';
+  #player = null;
   constructor (){
     this.$ = document.querySelector('.ui-wrapper');
     this.mount();
@@ -13,6 +15,7 @@ class UI {
 
   }
   mount (){
+    this.getPlayer();
     this.$.addEventListener('click', e=>{
             if(e.target.tagName!=='BUTTON') return;
             if(e.target.dataset.bind) this.getData();
@@ -23,9 +26,37 @@ class UI {
       this.bindingElements.push(id)
     }
   }
+  getPlayer (){
+      try {
+          window.mcefQuery({
+            request: "info",
+            persistent: true,
+            onSuccess: response=>{
+              this.player = JSON.parse(response)
+            },
+            onFailure: function(errCode, errMsg) {
+                   new Error(errCode, errMsg)
+            }
+              
+          })
+
+      } 
+      catch (err) {
+          new Error(err)
+      }
+  }
+  get player (){
+    return this.#player;
+  }
+  set player (val){
+    this.#player = val;
+  }
   getData (){
 
-    let data = {};
+    const data = {
+            player_name: this.player.name,
+            player_uuid: this.player.uuid,
+    };
     this.bindingElements.map( (id)=>{
         const el = document.querySelector(`[data-bind="${id}"]`)
         if(el.getAttribute('type')==='checkbox'){
@@ -35,15 +66,17 @@ class UI {
             data[id] = el.value;
         }
     })
+
+
     const u = JSON.stringify(data)
-    const url = `http://localhost:60000/${this.ccID}/?${u}`;
+    const url = `${this.url}/?${u}`;
     fetch(url);
   }
-  get ccID (){
-    return this.ccid;
+  get url (){
+    return this.#url;
   }
-  set ccID (val){
-    this.ccid = val;
+  set url (val){
+    this.#url = val;
   }
   append (html){
     this.$.innerHTML += html;

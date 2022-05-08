@@ -2,7 +2,7 @@
 -- https://tweaked.cc/module/parallel.html
 -- https://tweaked.cc/module/multishell.html
 -- https://tweaked.cc/module/textutils.html#v:unserializeJSON
-
+-- app.mcap.fun/8080/ui/index.html
 -- utils
 local function luaArrayToJSArray (array)
   local formatedContent = "["
@@ -43,9 +43,9 @@ local function _switch(wd, content, left, top, checked, lang, bind)
   wd.runJS(formatTpl)
 end
 
-local function input(wd, content, left, top,  lang, bind)
-  local tpl =  "ui.input('%s',  %s, %s, '%s', '%s')"
-  local formatTpl = string.format(tpl, content,  left, top, lang, bind)
+local function input(wd, content, label, left, top,  lang, bind)
+  local tpl =  "ui.input('%s', '%s',  %s, %s, '%s', '%s')"
+  local formatTpl = string.format(tpl, content, label,  left, top, lang, bind)
   wd.runJS(formatTpl)
 end
 
@@ -57,14 +57,17 @@ end
 ---------run-server---------------------
 -- http://localhost:60000/0
 ----------------------------------------
-local function initServer (wd, callback)
-  local id = os.getComputerID()
-  wd.runJS('ui.ccID='..id)
+local function initServer (wd, url, callback)
+  local id = os.getComputerID() 
+  local tpl =  "ui.url = '%s/%s'"
+  local formatTpl = string.format(tpl, url, id)
+  wd.runJS(formatTpl)
   -- listen http://localhost:60000/0
   while true do
           ev, code, path, args = os.pullEvent("webModem_request")
           if args ~=nil then
             callback(args)
+
           end
   end
 end
@@ -79,10 +82,21 @@ local function image(wd, url, left, top, width, height)
   wd.runJS(formatTpl)
 end
 -------------------------
-function color (wd, color)
+local function color (wd, color)
   local tpl =  "ui.color( '%s')"
   local formatTpl = string.format(tpl, color)
   wd.runJS(formatTpl)
+end
+---------------------------
+local function clear(wd)
+  local formatTpl = "ui.clear()"
+  wd.runJS(formatTpl)
+end
+---------------------------
+local function name(wd, text)
+  local tpl =  "ui.name( '%s')"
+  local formatTpl = string.format(tpl, text)
+  wd.runJS(formatTpl);
 end
 -------------------------
 local function block(wd, borderWidth, borderColor, backgroundColor, left, top, width, height)
@@ -102,18 +116,22 @@ ui = {
   getData = getData,
   image = image,
   block = block,
-  color = color
+  color = color,
+  clear = clear,
+  name = name
 }
 
 return ui
-
---[[
-
+--  @USAGE
+--[[    
 
 require "ui"
 
 local wd = peripheral.wrap("top")
 local res = wd.getResolution()
+
+ui.clear(wd)
+ui.name(wd, 'formID')
 ui.color(wd, 'black')
 ----------------------
 
@@ -130,13 +148,13 @@ ui.checkbox(wd, 'Variant 2', 400, 50, false, 'ru')
 ui.button(wd, 'Soxranitmzn', 'success', 10, 350, 'ru', 'click_btn')
 
 
-
 --ui.switch(wd, 'Perekluchatel', 400, 220, true, 'ru', 'bind_id-1')
 ui.switch(wd, 'test 1', 400, 300, true, nil, 'bind_id-2')
 ui.switch(wd, 'test 2', 400, 350, true, nil)
 
-ui.input(wd, 'Pole dlya vvoda', 400, 370, 'ru', 'id-inputData')
-ui.input(wd, 'Pole dlya vvoda 2', 400, 450, 'ru')
+ui.input(wd, 'kontent 1', 'Pole dlya vvoda', 400, 370, nil, 'id-inputData')
+ui.input(wd, 'kontent 2', 'Pole dlya vvoda 2', 400, 450, nil)
+
 
 ui.items(wd, {
   "item 1",
@@ -145,33 +163,27 @@ ui.items(wd, {
   "item 4",
   "item 5",
   "item 6",
-}, 10, 450)
+}, 10, 400)
 
 
 ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 670, 400, 200, 450)
 ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 900, 0, 100, 100)
 ui.block(wd, 10, 'magenta', 'darkcyan', 100, 850, 400, 100)
 
-os.sleep(3)
-ui.getData(wd)
+-- 
 
-------init webModem-----
+----- init webModem ----
 
 local wm = peripheral.wrap("left")
-ui.initServer(wd, 
+
+ui.initServer(wd, "http://localhost:60000",
 function (jsonBody)
-  local body = textutils.unserializeJSON(jsonBody)
-  for key, val in pairs(body) do
-     print(key..': ', val)
-  end
-  print('----------------------')
+      local body = textutils.unserializeJSON(jsonBody)
+      for key, val in pairs(body) do
+         print(key..': ', val)
+      end
+      print('----------------------')
 end)
-
-
-
-
-
--- ru-EN
 
 
 ]]
