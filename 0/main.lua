@@ -22,6 +22,12 @@ ui.checkbox(wd, 'Variant 2', 400, 50, false, 'ru')
 ui.button(wd, 'Soxranitmzn', 'success', 10, 350, 'ru', 'click_btn')
 
 
+ui.radio(wd, {
+  "item 1",
+  "item 2",
+  "item 3",
+}, 700, 150)
+
 --ui.switch(wd, 'Perekluchatel', 400, 220, true, 'ru', 'bind_id-1')
 ui.switch(wd, 'test 1', 400, 300, true, nil, 'bind_id-2')
 ui.switch(wd, 'test 2', 400, 350, true, nil)
@@ -40,9 +46,18 @@ ui.items(wd, {
 }, 10, 400)
 
 
-ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 670, 400, 200, 450)
+ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 770, 400, 200, 450)
 ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 900, 0, 100, 100)
-ui.block(wd, 10, 'magenta', 'darkcyan', 100, 850, 400, 100)
+ui.block(wd, 10, 'magenta', 'darkcyan', 800, 940, 100, 50)
+
+
+ui.table(wd, {
+  { "Indifikator", "Imya", "Opisanie", "test" },
+  { 0, "Morkovmzn", "test 1 1 1", "111" },
+  { 1, "Xleb", "test 33 3 3", '' },
+  { '2.1', "Kapusta", "test 1 11", 333 },
+
+}, 'brown', 'skyblue', 10, 700, 700, 500, 'ru')
 
 -- 
 

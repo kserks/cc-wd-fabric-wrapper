@@ -109,6 +109,7 @@ class UI {
   
   }
   radio (content, left, top, lang, bind_id){
+
       this.bind(bind_id)
       const getItems = ()=>{
       return content.map( (node, index)=>{
@@ -146,6 +147,7 @@ class UI {
     this.append(tpl);
   }
   items (content, left, top, lang){
+ 
       const getItems = ()=>{
       return content.map( (node, index)=>{
                 const text = textFormat(node,  lang);
@@ -181,6 +183,47 @@ class UI {
     this.append(tpl);
 
   }
+  table (content, headColor, tableColor, left, top, width, height, lang){
+    const getHead = () =>{
+      return content[0].map(item=>{
+                const text = textFormat(item,  lang);
+                return `<th>${text}</th>`;
+      }).join('');
+    }
+
+    const getTableCell = row =>{
+        
+
+     return row.map(cell=>{
+                const text = textFormat(cell,  lang);
+                return `<td>${text}</td>`;
+             }).join('')
+
+
+    }
+
+    const getItems = ()=>{
+
+      content.shift()
+      return content.map( (row, index)=>{
+                return `<tr>
+                            ${getTableCell(row)}
+                        </tr>`;
+             }).join('');
+    }
+
+    const tpl =  `<div  ${styleFormat(left, top, width, height)}><table class="ui-table">
+                    <thead style="color: ${headColor}">
+                        <tr>
+                          ${getHead()}
+                        </tr>
+                    </thead>
+                    <tbody style="color: ${tableColor}">
+                        ${getItems()}
+                    </tbody>
+                  </table></div>`
+    this.append(tpl);             
+  }
 }
 
 
@@ -189,6 +232,7 @@ class UI {
 window.onload = function (){
 
   window.ui = new UI()
+
   /*
 ui.checkbox('Variant', 400, 10, true, 'ru', 'checkbox_1')
 ui.checkbox('Variant 2', 400, 50, false, 'ru')

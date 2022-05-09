@@ -3,57 +3,7 @@
 -- https://tweaked.cc/module/multishell.html
 -- https://tweaked.cc/module/textutils.html#v:unserializeJSON
 -- app.mcap.fun/8080/ui/index.html
--- utils
-local function luaArrayToJSArray (array)
-  local formatedContent = "["
-  for i = 1, #array do 
-     formatedContent  = formatedContent .. "'"..array[i].."',"
-  end
-  formatedContent = formatedContent.."]"
-  return formatedContent
-end
 
---------------------------
-
-
-local function button(wd, content, _type, left, top, lang, click_bind)
-  local tpl =  "ui.button('%s', '%s', %s, %s, '%s', '%s')"
-  local formatTpl = string.format(tpl, content, _type, left, top, lang, click_bind)
-  wd.runJS(formatTpl)
-end
-
-local function checkbox(wd, content, left, top, checked, lang, click_bind)
-  local tpl =  "ui.checkbox('%s',  %s, %s, %s, '%s', '%s')"
-  local formatTpl = string.format(tpl, content,  left, top,  checked, lang, click_bind)
-  wd.runJS(formatTpl)
-end
-
-
-
-
-local function radio(wd, array, left, top, lang)
-  local tpl =  "ui.radio(%s,  %s, %s, '%s')"
-  local formatTpl = string.format(tpl, luaArrayToJSArray(array),  left, top, lang)
-  wd.runJS(formatTpl)
-end
-
-local function _switch(wd, content, left, top, checked, lang, bind)
-  local tpl =  "ui.switch_2('%s',  %s, %s, %s, '%s', '%s')"
-  local formatTpl = string.format(tpl, content,  left, top,  checked, lang, bind)
-  wd.runJS(formatTpl)
-end
-
-local function input(wd, content, label, left, top,  lang, bind)
-  local tpl =  "ui.input('%s', '%s',  %s, %s, '%s', '%s')"
-  local formatTpl = string.format(tpl, content, label,  left, top, lang, bind)
-  wd.runJS(formatTpl)
-end
-
-local function items(wd, array, left, top, lang)
-  local tpl =  "ui.items(%s,  %s, %s, '%s')"
-  local formatTpl = string.format(tpl, luaArrayToJSArray(array),  left, top, lang)
-  wd.runJS(formatTpl)
-end
 ---------run-server---------------------
 -- http://localhost:60000/0
 ----------------------------------------
@@ -71,6 +21,48 @@ local function initServer (wd, url, callback)
           end
   end
 end
+
+---------------------------------------
+
+local function button(wd, content, _type, left, top, lang, click_bind)
+  local tpl =  "ui.button('%s', '%s', %s, %s, '%s', '%s')"
+  local formatTpl = string.format(tpl, content, _type, left, top, lang, click_bind)
+  wd.runJS(formatTpl)
+end
+---------------------------------------
+local function checkbox(wd, content, left, top, checked, lang, click_bind)
+  local tpl =  "ui.checkbox('%s',  %s, %s, %s, '%s', '%s')"
+  local formatTpl = string.format(tpl, content,  left, top,  checked, lang, click_bind)
+  wd.runJS(formatTpl)
+end
+
+
+---------------------------------------
+
+local function radio(wd, array, left, top, lang)
+  local tpl =  "ui.radio(%s,  %s, %s, '%s')"
+  local formatTpl = string.format(tpl, textutils.serializeJSON(array),  left, top, lang)
+  wd.runJS(formatTpl)
+end
+---------------------------------------
+local function _switch(wd, content, left, top, checked, lang, bind)
+  local tpl =  "ui.switch_2('%s',  %s, %s, %s, '%s', '%s')"
+  local formatTpl = string.format(tpl, content,  left, top,  checked, lang, bind)
+  wd.runJS(formatTpl)
+end
+---------------------------------------
+local function input(wd, content, label, left, top,  lang, bind)
+  local tpl =  "ui.input('%s', '%s',  %s, %s, '%s', '%s')"
+  local formatTpl = string.format(tpl, content, label,  left, top, lang, bind)
+  wd.runJS(formatTpl)
+end
+---------------------------------------
+local function items(wd, array, left, top, lang)
+  local tpl =  "ui.items(%s,  %s, %s, '%s')"
+  local formatTpl = string.format(tpl, textutils.serializeJSON(array),  left, top, lang)
+  wd.runJS(formatTpl)
+end
+
 -----------------------------------------
 local function getData(wd)
   wd.runJS('ui.getData()')
@@ -105,6 +97,13 @@ local function block(wd, borderWidth, borderColor, backgroundColor, left, top, w
   wd.runJS(formatTpl)
 end
 -------------------------
+local function _table(wd, array, headColor, tableColor, left, top, width, height, lang)
+  local tpl =  "ui.table(%s, '%s', '%s',  %s, %s, %s, %s, '%s')"
+  local formatTpl = string.format(tpl, textutils.serializeJSON(array), headColor, tableColor,  left, top, width, height, lang)
+  wd.runJS(formatTpl)
+end
+
+
 ui = {
   button = button,
   checkbox = checkbox,
@@ -118,12 +117,14 @@ ui = {
   block = block,
   color = color,
   clear = clear,
-  name = name
+  name = name,
+  table = _table
 }
 
 return ui
 --  @USAGE
 --[[    
+
 
 require "ui"
 
@@ -148,6 +149,12 @@ ui.checkbox(wd, 'Variant 2', 400, 50, false, 'ru')
 ui.button(wd, 'Soxranitmzn', 'success', 10, 350, 'ru', 'click_btn')
 
 
+ui.radio(wd, {
+  "item 1",
+  "item 2",
+  "item 3",
+}, 700, 150)
+
 --ui.switch(wd, 'Perekluchatel', 400, 220, true, 'ru', 'bind_id-1')
 ui.switch(wd, 'test 1', 400, 300, true, nil, 'bind_id-2')
 ui.switch(wd, 'test 2', 400, 350, true, nil)
@@ -166,9 +173,18 @@ ui.items(wd, {
 }, 10, 400)
 
 
-ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 670, 400, 200, 450)
+ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 770, 400, 200, 450)
 ui.image(wd, "http://fabricjs.com/assets/pug_small.jpg", 900, 0, 100, 100)
-ui.block(wd, 10, 'magenta', 'darkcyan', 100, 850, 400, 100)
+ui.block(wd, 10, 'magenta', 'darkcyan', 800, 940, 100, 50)
+
+
+ui.table(wd, {
+  { "Indifikator", "Imya", "Opisanie", "test" },
+  { 0, "Morkovmzn", "test 1 1 1", "111" },
+  { 1, "Xleb", "test 33 3 3", '' },
+  { '2.1', "Kapusta", "test 1 11", 333 },
+
+}, 'brown', 'skyblue', 10, 700, 700, 500, 'ru')
 
 -- 
 
@@ -184,6 +200,5 @@ function (jsonBody)
       end
       print('----------------------')
 end)
-
 
 ]]

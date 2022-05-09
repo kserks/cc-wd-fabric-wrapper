@@ -35,7 +35,7 @@ const dictonary = {
 }
 
 function textFormat(originalText,  lang){
-  let text = originalText
+  let text = String(originalText)
   if(lang==='ru'){
     const sortedArr = Object.keys(dictonary)
                             .sort((a,b)=>{
@@ -73,7 +73,7 @@ function typeFormat (type){
 
 function styleFormat (left, top, width, height){
   if(width&&height){
-      return `style='position:absolute; left: ${left}px; top: ${top}px;width:${width}px;height:${height}px;'`
+      return `style='overflow: auto;position:absolute; left: ${left}px; top: ${top}px;width:${width}px;height:${height}px;'`
   }
   return `style='position:absolute; left: ${left}px; top: ${top}px;'`
 }
