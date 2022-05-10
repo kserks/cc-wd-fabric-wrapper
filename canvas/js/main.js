@@ -1,13 +1,17 @@
-window.onerror = function (error, url, line, columnNo, error){
-   document.querySelector('body').innerHTML = JSON.stringify(["js-Error",error, url, line, columnNo, error])
-   //setTimeout(location.reload, 2000)",
+window.onerror = function (message, source, lineno, colno, error){
+   document.querySelector('body').innerHTML = JSON.stringify(["js-error",message, source, lineno, colno, error])
 }
-function include_html (tpl){
-    document.querySelector('body').innerHTML = tpl;
+// replaceAll polyfill
+if (!String.prototype.replaceAll) {
+  String.prototype.replaceAll = function(str, newStr){
+    if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
+      return this.replace(str, newStr);
+    }
+    return this.replace(new RegExp(str, 'g'), newStr);
+
+  };
 }
-function include_style (style){
-    document.querySelector('body').innerHTML += `<style>${style}</style>`;
-}
+/**/
 fabric.Object.prototype.selectable = false;
 
 const {
@@ -22,8 +26,32 @@ const {
   Line
 } = fabric;
 
+function drawPoints (points, color,  radius){
+  points.forEach(point=>{
+    const p = new  Circle({
+        radius : radius||3,
+        fill : color,
+        top : point[1],
+        left : point[0]
+      })
+    canvas.add(p)
+  })
+}
+
+
+
+
 window.onload = function (){
   window.canvas =  new Canvas('screen');
+  /*
+  const points = [
+  [100, 100],
+  [110, 110],
+  [120, 120],
+  [130, 130]
+]
+  drawPoints (points, 'magenta', 4)
+*/
 }
 
 
@@ -64,8 +92,8 @@ const dictonary = {
     "ya ja Ya Ja": 'я'
 }
 
-function textFormat(originalText,  lang){
-  let text = originalText
+function textFormat(originalText, options,  lang){
+  let text = String(originalText)
   if(lang==='ru'){
     const sortedArr = Object.keys(dictonary)
                             .sort((a,b)=>{
@@ -85,6 +113,6 @@ function textFormat(originalText,  lang){
                   })
             })
   }
-   canvas.add(new Text(text, options))
+  canvas.add(new Text(text, options))
 }
 

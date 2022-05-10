@@ -156,9 +156,12 @@ local function canvasSize (wd, width, height)
 end
 ------------------------------------------------------------------------------------
 
-local function setURL (wd, url)
-  wd.setURL(url)
+local function points (wd, points, color, radius)
+  local str = "drawPoints (%s, '%s',  %s)"
+  local js_code = string.format(str, textutils.serializeJSON(points), color, radius)
+  wd.runJS(js_code)
 end
+------------------------------------------------------------------------------------
 
 canvas = {
   line = line,
@@ -172,7 +175,7 @@ canvas = {
   clear = canvasClear,
   color = canvasColor,
   size = canvasSize,
-  setURL = setURL
+  points = points
 }
 
 return canvas
@@ -182,13 +185,11 @@ return canvas
 require "canvas"
 
 local wd = peripheral.wrap("top")
-local res = wd.getResolution()
+local w, h = wd.getResolution()
 
-canvas.setURL(wd, 'app.mcap.fun/8080/canvas/index.html')
-os.sleep(2)
 
 canvas.clear(wd)
-canvas.size(wd, res, res)
+canvas.size(wd, w, h)
 canvas.color(wd, "black")
 
 canvas.line(wd, { 50, 720, 300, 720 }, { fill = "cyan", stroke = "cyan", strokeWidth = 25 })
@@ -263,5 +264,16 @@ canvas.triangle(wd, {
     stroke = 'deepskyblue', 
     strokeWidth = 5
 })
+
+
+
+canvas.points(wd, {
+  { 100, 100 },
+  { 110, 100 },
+  { 120, 120 },
+  { 130, 130 },
+  { 140, 140 },
+  { 150, 150 },
+}, "magenta", 5)
 
 ]]
