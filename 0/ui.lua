@@ -103,6 +103,10 @@ local function _table(wd, array, headColor, tableColor, left, top, width, height
   wd.runJS(formatTpl)
 end
 
+local function getData (wd, time)
+  local res, data =  wd.getJS('var request=ui.getData();', time)
+  return data
+end
 
 ui = {
   button = button,
@@ -118,7 +122,8 @@ ui = {
   color = color,
   clear = clear,
   name = name,
-  table = _table
+  table = _table,
+  getData = getData
 }
 
 return ui
@@ -129,12 +134,20 @@ return ui
 require "ui"
 
 local wd = peripheral.wrap("top")
-local res = wd.getResolution()
+
 
 ui.clear(wd)
 ui.name(wd, 'formID')
 ui.color(wd, 'black')
 ----------------------
+-- Если ID (clcik_btn) задается для кнопки, то на неё навешивается клик
+ui.button(wd, 'Soxranitmzn', 'success', 10, 350, 'ru', 'click_btn')
+
+local data = ui.getData(wd, 1000)
+
+print(data)
+
+
 
 ui.button(wd, 'Po umolchaniyu', 'default', 10, 10, 'ru')
 ui.button(wd, 'Vnimanie', 'primary', 10, 60, 'ru')
@@ -188,17 +201,5 @@ ui.table(wd, {
 
 -- 
 
------ init webModem ----
-
-local wm = peripheral.wrap("left")
-
-ui.initServer(wd, "http://localhost:60000",
-function (jsonBody)
-      local body = textutils.unserializeJSON(jsonBody)
-      for key, val in pairs(body) do
-         print(key..': ', val)
-      end
-      print('----------------------')
-end)
 
 ]]
